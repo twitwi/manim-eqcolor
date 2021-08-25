@@ -119,7 +119,16 @@ def eq(content, **kw_args):
     return MathTex(*chunks, **kw_args), gpre, gpost, glines, gmore
 
 
-def eqanimate(scene, tex, gpre, gpost, glines, gmore, COLORS=[BLUE, RED, GREEN, YELLOW], WHITE=WHITE, rt=1):
+def eqanimate(scene, tex, gpre, gpost, glines, gmore, COLORS=[BLUE, RED, GREEN, YELLOW], WHITE=WHITE, rt=1, trim=None):
+    if trim is not None:
+        if type(trim) == int: trim = [trim]
+        if len(trim) == 1: trim.append(0)
+        N = len(gpre)
+        if trim[1] == 0: trim[1] = N
+        gpre = gpre[trim[0] : trim[1]]
+        gpost = gpost[trim[0] : trim[1]]
+        glines = glines[trim[0] : trim[1]]
+        gmore = gmore[trim[0] : trim[1]]
     gpre = gpre[1:]
     for i,_ in enumerate(gpre):
         enter1 = []

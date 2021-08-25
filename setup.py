@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='manim-eqcolor', 
-    version='0.2',
+    version='0.3',
     description='Meta latex for manim equations', 
     url='https://github.com/twitwi/manim-eqcolor',
     author='@twitwi', 

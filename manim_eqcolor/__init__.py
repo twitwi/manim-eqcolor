@@ -3,36 +3,6 @@ from manim import *
 
 TEX_TEMPLATE = r'''\usepackage{xcolor}'''
 
-EXAMPLE = r"""
-from manim import *
-from manim_eqcolor import *
-
-class Example(Scene):
-    def construct(self):
-        info = eq(r'''
-&=\innprod{\Cm}{T^\epsilon} - \innprod{\Cm}{T^0} + \epsilon \entropy{T^\epsilon} - \epsilon \entropy{T^\epsilon} \\
-% (                       )                      (                             )
-%%cause: by definition of $T^\epsilon$ that minimizes $\innprod{\Cm}{T} + \epsilon \entropy{T}$
-%     (                 )                         (                    )
-&\leq \innprod{\Cm }{T^0} - \innprod{\Cm }{T^0} + \epsilon \entropy{T^0} - \epsilon \entropy{T^\epsilon} \label{eq_lemma:2a} \\
-%     [                 ]                         {                    }
-%%cause: shuffling just for the demo/test
-%%up: 1
-%     {                    }                         [                 ]
-&\leq \epsilon \entropy{T^0} - \innprod{\Cm }{T^0} + \innprod{\Cm }{T^0} - \epsilon \entropy{T^\epsilon} \\
-%     (      ) <           > [                                         ] <>(      ) <                  >
-%%cause: simplifying and factorizing
-%     (      ) <                                                 >
-&\leq \epsilon \left( \entropy{T^0} - \entropy{T^\epsilon} \right) 
-''', tex_template=r'''
-\newcommand{\Cm}{\textbf{C}}
-\newcommand{\entropy}[1]{\mathcal{H}(#1)}
-\newcommand{\innprod}[2]{\left\langle #1\,,\, #2 \right\rangle_F}
-''')
-        eqanimate(self, *info)
-"""
-
-
 def eq(content, **kw_args):
     if 'tex_template' not in kw_args:
         kw_args['tex_template'] = TexTemplate()
@@ -149,7 +119,7 @@ def eqanimate(scene, tex, gpre, gpost, glines, gmore, COLORS=[BLUE, RED, GREEN, 
                     e2.append(GrowFromCenter(tex.submobjects[ind]))
                     leave.append(ApplyMethod(tex.submobjects[ind].set_fill, WHITE))
                 enter2.append(AnimationGroup(*e2))
-         # show the first line
+        # show the first line
         if i == 0: scene.play(FadeIn(*[tex.submobjects[ind] for ind in glines[i]], run_time=rt))
         # highlight current line
         if len(enter1)>0: scene.play(AnimationGroup(*enter1), run_time=rt)

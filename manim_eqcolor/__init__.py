@@ -141,6 +141,7 @@ def eqanimate(scene, tex, gpre, gpost, glines, gmore, COLORS=[BLUE, RED, GREEN, 
         # show highlight of next line
         #if len(enter2)>0: scene.play(AnimationGroup(*enter2, run_time=rt))
         for e in enter2: scene.play(e, run_time=rt)
+        if len(enter2)>0: scene.wait(rt/3)
         #self.wait(1)
         # unhighlight
         if len(leave)>0: scene.play(AnimationGroup(*leave), run_time=rt)

@@ -101,9 +101,19 @@ Packing in folder (with reverse mp4 already generated (see above)).
 echo "enter output folder name (to create)"
 read F
 mkdir "$F"
+
 for i in $(vids) ; do cp -t "$F" "$i" "$i-rev.mp4" ; done
 (prestpl | awk '{print} $0 == "<!--HERE-->" {exit}' ; vids | while read i ; do i=$(basename "$i"); echo "<div><video src='$i'></video><video src='$i-rev.mp4'></video></div>" ; done ; prestpl | awk 'go {print} $0 == "<!--HERE-->" {go=1}') > "$F/index.html"
+
 echo firefox "$F/index.html"
 ~~~
 
 
+Same but ignoring shorter (pure wait, by convention)
+
+~~~bash
+
+(prestpl | awk '{print} $0 == "<!--HERE-->" {exit}' ; vids | while read i ; do duration=$(ffprobe -i "$i" -show_entries format=duration -v quiet | grep duration | sed 's@.*=@@g') ; if (( $(echo "$duration > 0.5" | bc -l) )) ; then cp -t "$F" "$i" "$i-rev.mp4" ; i=$(basename "$i"); echo "<div><video src='$i'></video><video src='$i-rev.mp4'></video></div>" ; fi ; done ; prestpl | awk 'go {print} $0 == "<!--HERE-->" {go=1}') > "$F/index.html"
+
+#for i in $(vids) ; do duration=$(ffprobe -i "$i" -show_entries format=duration -v quiet | grep duration | sed 's@.*=@@g') ; if (( $(echo "$duration > 0.5" | bc -l) )) ; then cp -t "$F" "$i" "$i-rev.mp4" ; fi ; done
+~~~

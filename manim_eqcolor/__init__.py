@@ -97,6 +97,12 @@ def eqanimate(scene, tex, gpre, gpost, glines, gmore, COLORS=[BLUE, RED, GREEN, 
         if len(trim) == 1: trim.append(0)
         N = len(gpre)
         if trim[1] == 0: trim[1] = N
+        # run some commands (like %%up)
+        for i in range(trim[0]):
+            for c,rest in gmore[i]:
+                if c == 'up':
+                    scene.camera.frame.shift(rest*DOWN)
+        # actually trim
         gpre = gpre[trim[0] : trim[1]]
         gpost = gpost[trim[0] : trim[1]]
         glines = glines[trim[0] : trim[1]]

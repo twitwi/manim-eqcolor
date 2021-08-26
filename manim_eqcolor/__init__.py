@@ -17,6 +17,7 @@ class Example(Scene):
 &\leq \innprod{\Cm }{T^0} - \innprod{\Cm }{T^0} + \epsilon \entropy{T^0} - \epsilon \entropy{T^\epsilon} \label{eq_lemma:2a} \\
 %     [                 ]                         {                    }
 %%cause: shuffling just for the demo/test
+%%up: 1
 %     {                    }                         [                 ]
 &\leq \epsilon \entropy{T^0} - \innprod{\Cm }{T^0} + \innprod{\Cm }{T^0} - \epsilon \entropy{T^\epsilon} \\
 %     (      ) <           > [                                         ] <>(      ) <                  >
@@ -57,11 +58,12 @@ def eq(content, **kw_args):
             p = p.strip()
             if c == 'cause':
                 #&\\phantom{"+"".join(stack)+"}\\;{\\color{lightgray}\\downarrow{}\\;{\\small \\text{", REST, "}}} \\nonumber\\\\
-                gmore[-1].append(len(chunks))
-                chunks.append(r'&\;{\color{red} \downarrow{}\;{\small \text{' + p + r'}}} \nonumber \\') # TODO scaling and color should be in manim to work
+                gmore[-1].append(['cause', len(chunks)])
+                chunks.append(r'&\; \downarrow{}\;{\tiny \text{' + p + r'}} \nonumber \\')
+            if c == 'up':
+                gmore[-1].append(['up', int(p)])
             # TODO maybe add stack stuff... but not sure as the latex rendering and the metalatex rendering will be different (in addition to causes)
         else: # 2-3 lines
-            print("-------------", il)
             if il==0:
                 pre = ''
                 eq, post = lines[il:il+2]
@@ -143,7 +145,6 @@ def eqanimate(scene, tex, gpre, gpost, glines, gmore, COLORS=[BLUE, RED, GREEN, 
             if len(group) > 0:
                 e2 = []
                 for ind in group:
-                    print(j)
                     tex.submobjects[ind].set_fill(COLORS[j]) # set the color before fading in
                     e2.append(GrowFromCenter(tex.submobjects[ind]))
                     leave.append(ApplyMethod(tex.submobjects[ind].set_fill, WHITE))
@@ -152,7 +153,12 @@ def eqanimate(scene, tex, gpre, gpost, glines, gmore, COLORS=[BLUE, RED, GREEN, 
         if i == 0: scene.play(FadeIn(*[tex.submobjects[ind] for ind in glines[i]], run_time=rt))
         # highlight current line
         if len(enter1)>0: scene.play(AnimationGroup(*enter1), run_time=rt)
-        for ind in gmore[i]: scene.play(FadeIn(tex.submobjects[ind]), run_time=rt)
+        for c,rest in gmore[i]:
+            if c == 'cause':
+                tex.submobjects[rest].set_fill(GREY)
+                scene.play(FadeIn(tex.submobjects[rest]), run_time=rt)
+            elif c == 'up':
+                scene.play(scene.camera.frame.animate.shift(rest*DOWN))
         # show non-highlight of next line
         toshow = [tex.submobjects[ind] for ind in glines[i+1] if ind not in sum(gpre[i], [])]
         if len(toshow)>0: scene.play(FadeIn(*toshow, run_time=rt))
